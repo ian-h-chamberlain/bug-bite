@@ -1,7 +1,6 @@
 # This make file contains tasks for the web build of the game
 #   Serve the web version locally by running `cargo make serve`
 #   Build a web release by running `cargo make release` (release is the `build/web` directory)
-
 [env]
 TARGET_DIR = "target/wasm32-unknown-unknown/release/"
 

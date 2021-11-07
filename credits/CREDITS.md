@@ -1,5 +1,11 @@
 # Credits
 
+## Code
+
+Base repository generated from
+[ian-h-chamberlain/bevy_game_template](https://github.com/ian-h-chamberlain/bevy_game_template),
+which is a fork of [NiklasEi/bevy_game_template](https://github.com/NiklasEi/bevy_game_template).
+
 ## Assets
 
-* Bevy icon: [MIT License](licenses/Bevy_MIT_License.md); Copyright (c) 2020 Carter Anderson
+- TBD
