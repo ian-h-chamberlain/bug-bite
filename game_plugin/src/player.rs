@@ -1,11 +1,10 @@
-use crate::actions::Actions;
+use crate::actions::{Actions, ViewMode};
 use crate::loading::TextureAssets;
 use crate::GameState;
+
 use bevy::prelude::*;
 
 pub struct PlayerPlugin;
-
-pub struct Player;
 
 /// This plugin handles player related stuff like movement
 /// Player logic is only active during the State `GameState::Playing`
@@ -13,46 +12,81 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_system_set(
             SystemSet::on_enter(GameState::Playing)
-                .with_system(spawn_player.system())
+                .with_system(spawn_crosshair.system())
                 .with_system(spawn_camera.system()),
         )
-        .add_system_set(SystemSet::on_update(GameState::Playing).with_system(move_player.system()));
+        .add_system_set(
+            SystemSet::on_update(GameState::Playing).with_system(control_crosshair.system()),
+        );
     }
 }
 
+struct MainCamera;
+
+struct Crosshair;
+
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands
+        .spawn_bundle(OrthographicCameraBundle::new_2d())
+        .insert(MainCamera);
 }
 
-fn spawn_player(
+fn spawn_crosshair(
     mut commands: Commands,
     textures: Res<TextureAssets>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     commands
         .spawn_bundle(SpriteBundle {
-            material: materials.add(textures.texture_bevy.clone().into()),
-            transform: Transform::from_translation(Vec3::new(0., 0., 1.)),
+            material: materials.add(textures.crosshair.clone().into()),
+            visible: Visible {
+                is_visible: true,
+                is_transparent: false,
+            },
+            transform: Transform {
+                translation: Vec3::ZERO,
+                scale: Vec3::splat(0.15),
+                ..Default::default()
+            },
             ..Default::default()
         })
-        .insert(Player);
+        .insert(Crosshair);
 }
 
-fn move_player(
-    time: Res<Time>,
+fn control_crosshair(
+    windows: Res<Windows>,
     actions: Res<Actions>,
-    mut player_query: Query<&mut Transform, With<Player>>,
+    mut q: QuerySet<(
+        Query<&Transform, With<MainCamera>>,
+        Query<(&mut Transform, &mut Visible), With<Crosshair>>,
+    )>,
 ) {
-    if actions.player_movement.is_none() {
-        return;
+    // UNWRAP: There is always exactly one primary window
+    let window = windows.get_primary().unwrap();
+
+    // UNWRAP: There is exactly one crosshairs
+    // check if the cursor is in the primary window
+    if let Some(pos) = window.cursor_position() {
+        let size = Vec2::new(window.width() as f32, window.height() as f32);
+
+        // the default orthographic projection is in pixels from the center;
+        // just undo the translation
+        let p = pos - size / 2.0;
+
+        let q_camera = q.q0();
+        // UNWRAP: There is exactly one MainCamera entity
+        let camera_transform = q_camera.single().unwrap();
+
+        // apply the camera transform
+        let world_pos = camera_transform.compute_matrix() * p.extend(0.0).extend(1.0);
+
+        let (mut crosshair_transform, _) = q.q1_mut().single_mut().unwrap();
+        crosshair_transform.translation = world_pos.truncate();
     }
-    let speed = 150.;
-    let movement = Vec3::new(
-        actions.player_movement.unwrap().x * speed * time.delta_seconds(),
-        actions.player_movement.unwrap().y * speed * time.delta_seconds(),
-        0.,
-    );
-    for mut player_transform in player_query.iter_mut() {
-        player_transform.translation += movement;
-    }
+
+    let (_, mut crosshair_visible) = q.q1_mut().single_mut().unwrap();
+    crosshair_visible.is_visible = match actions.view_mode {
+        ViewMode::Sights => true,
+        ViewMode::Spotting => false,
+    };
 }
