@@ -14,8 +14,8 @@ fn main() {
         // .insert_resource(Msaa { samples: 4 })
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .insert_resource(WindowDescriptor {
-            width: 800.,
-            height: 600.,
+            width: 800.0,
+            height: 600.0,
             title: "Bug Bite".to_string(),
             ..Default::default()
         })

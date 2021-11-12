@@ -1,3 +1,9 @@
+#![allow(clippy::too_many_arguments)] // systems quickly gain lots of args
+#![allow(clippy::needless_pass_by_value)] // Res<T>
+#![allow(clippy::default_trait_access)] // general ..Default::default()
+#![allow(clippy::type_complexity)] // for QuerySet<(...)>
+#![allow(clippy::module_name_repetitions)] // meh, maybe reconsider this one
+
 mod actions;
 mod audio;
 mod loading;

@@ -1,8 +1,9 @@
 use crate::actions::{Actions, ViewMode};
-use crate::loading::TextureAssets;
 use crate::GameState;
 
 use bevy::prelude::*;
+
+mod scope_sprite;
 
 pub struct PlayerPlugin;
 
@@ -12,7 +13,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_system_set(
             SystemSet::on_enter(GameState::Playing)
-                .with_system(spawn_crosshair.system())
+                .with_system(scope_sprite::spawn_scope.system())
                 .with_system(spawn_camera.system()),
         )
         .add_system_set(
@@ -29,28 +30,6 @@ fn spawn_camera(mut commands: Commands) {
     commands
         .spawn_bundle(OrthographicCameraBundle::new_2d())
         .insert(MainCamera);
-}
-
-fn spawn_crosshair(
-    mut commands: Commands,
-    textures: Res<TextureAssets>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands
-        .spawn_bundle(SpriteBundle {
-            material: materials.add(textures.crosshair.clone().into()),
-            visible: Visible {
-                is_visible: true,
-                is_transparent: false,
-            },
-            transform: Transform {
-                translation: Vec3::ZERO,
-                scale: Vec3::splat(0.15),
-                ..Default::default()
-            },
-            ..Default::default()
-        })
-        .insert(Crosshair);
 }
 
 fn control_crosshair(
