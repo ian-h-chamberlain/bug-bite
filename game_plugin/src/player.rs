@@ -24,6 +24,7 @@ impl Plugin for PlayerPlugin {
 
 struct MainCamera;
 
+struct ScopeMask;
 struct Crosshair;
 
 fn spawn_camera(mut commands: Commands) {
@@ -37,7 +38,8 @@ fn control_crosshair(
     actions: Res<Actions>,
     mut q: QuerySet<(
         Query<&Transform, With<MainCamera>>,
-        Query<(&mut Transform, &mut Visible), With<Crosshair>>,
+        Query<&mut Visible, With<ScopeMask>>,
+        Query<&mut Transform, With<Crosshair>>,
     )>,
 ) {
     // UNWRAP: There is always exactly one primary window
@@ -59,13 +61,14 @@ fn control_crosshair(
         // apply the camera transform
         let world_pos = camera_transform.compute_matrix() * p.extend(0.0).extend(1.0);
 
-        let (mut crosshair_transform, _) = q.q1_mut().single_mut().unwrap();
+        let mut crosshair_transform = q.q2_mut().single_mut().unwrap();
         crosshair_transform.translation = world_pos.truncate();
     }
 
-    let (_, mut crosshair_visible) = q.q1_mut().single_mut().unwrap();
-    crosshair_visible.is_visible = match actions.view_mode {
-        ViewMode::Sights => true,
-        ViewMode::Spotting => false,
-    };
+    for mut visible in q.q1_mut().iter_mut() {
+        visible.is_visible = match actions.view_mode {
+            ViewMode::Sights => true,
+            ViewMode::Spotting => false,
+        };
+    }
 }

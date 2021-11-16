@@ -8,6 +8,7 @@ use bevy::render::texture::TextureFormat;
 use bevy::sprite::build_sprite_pipeline;
 
 use crate::loading::TextureAssets;
+use crate::player::{Crosshair, ScopeMask};
 
 pub(super) fn spawn_scope(
     mut commands: Commands,
@@ -67,15 +68,17 @@ pub(super) fn spawn_scope(
     let screen_size = Vec2::new(window.width() as f32, window.height() as f32);
 
     // Spawn a big black rectangle
-    commands.spawn_bundle(SpriteBundle {
-        material: materials.add(ColorMaterial::color(Color::BLACK)),
-        sprite: Sprite::new(screen_size),
-        mesh: meshes.add(shape::Quad::new(screen_size).into()),
-        transform: Transform::from_xyz(0.0, 0.0, 1.0),
-        ..Default::default()
-    });
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.add(ColorMaterial::color(Color::BLACK)),
+            sprite: Sprite::new(screen_size),
+            mesh: meshes.add(shape::Quad::new(screen_size).into()),
+            transform: Transform::from_xyz(0.0, 0.0, 1.0),
+            ..Default::default()
+        })
+        .insert(ScopeMask);
 
-    // and the
+    // and the crosshair itself to be controlled by the player
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.add(textures.crosshair.clone().into()),
@@ -94,5 +97,5 @@ pub(super) fn spawn_scope(
             },
             ..Default::default()
         })
-        .insert(super::Crosshair);
+        .insert_bundle((ScopeMask, Crosshair));
 }
