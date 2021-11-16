@@ -4,14 +4,15 @@
 #[cfg(target_arch = "wasm32")]
 use bevy_webgl2;
 
-use bevy::prelude::{App, ClearColor, Msaa, WindowDescriptor};
+use bevy::prelude::*;
 use bevy::DefaultPlugins;
 use game_plugin::GamePlugin;
 
 fn main() {
-    let mut app = App::build();
+    let mut app = App::new();
+
     app.insert_resource(Msaa { samples: 4 })
-        .insert_resource(ClearColor::default())
+        .insert_resource(ClearColor(Color::default()))
         .insert_resource(WindowDescriptor {
             width: 800.0,
             height: 600.0,

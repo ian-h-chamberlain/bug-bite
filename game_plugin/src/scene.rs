@@ -6,10 +6,8 @@ use crate::GameState;
 pub struct ScenePlugin;
 
 impl Plugin for ScenePlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        app.add_system_set(
-            SystemSet::on_enter(GameState::Playing).with_system(spawn_character.system()),
-        );
+    fn build(&self, app: &mut App) {
+        app.add_system_set(SystemSet::on_enter(GameState::Playing).with_system(spawn_character));
     }
 }
 

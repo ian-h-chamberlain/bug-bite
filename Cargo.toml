@@ -38,6 +38,7 @@ web = [
 
 dev = [
     "bevy/dynamic",
+    "game_plugin/dev",
     "native",
 ]
 
@@ -45,6 +46,22 @@ dev = [
 bevy = { version = "0.5.0", default-features = false }
 bevy_webgl2 = { version = "0.5.0", optional = true }
 game_plugin = { path = "game_plugin" }
+
+[patch.crates-io]
+bevy = { git = "https://github.com/bevyengine/bevy" }
+bevy_kira_audio = { git = "https://github.com/NiklasEi/bevy_kira_audio", branch = "bevy_main" }
+bevy_webgl2 = { git = "https://github.com/mrk-its/bevy_webgl2" }
+bevy_asset_loader = { git = "https://github.com/NiklasEi/bevy_asset_loader", branch = "bevy_main" }
+
+# We would do a patch here like:
+#
+#   [patch.'https://github.com/bevyengine/bevy']
+#   bevy = { git = "https://github.com//bevyengine/bevy" }
+#   bevy_reflect = { git = "https://github.com//bevyengine/bevy" }
+#
+# except for https://github.com/rust-lang/cargo/issues/5478,
+# So .cargo/config.toml does a path override instead. Probably could also
+# do a fork or something instead...
 
 [build-dependencies]
 embed-resource = "1.4"

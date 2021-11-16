@@ -18,7 +18,7 @@ use crate::menu::MenuPlugin;
 use crate::player::PlayerPlugin;
 use crate::scene::ScenePlugin as ScenePlugin;
 
-use bevy::app::AppBuilder;
+use bevy::app::App;
 use bevy::prelude::*;
 
 #[cfg(debug_assertions)]
@@ -40,7 +40,7 @@ enum GameState {
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_state(GameState::Loading)
             .add_plugin(LoadingPlugin)
             .add_plugin(MenuPlugin)

@@ -7,12 +7,10 @@ pub struct MenuPlugin;
 /// This plugin is responsible for the game menu (containing only one button...)
 /// The menu is only drawn during the State `GameState::Menu` and is removed when that state is exited
 impl Plugin for MenuPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.init_resource::<ButtonMaterials>()
-            .add_system_set(SystemSet::on_enter(GameState::Menu).with_system(setup_menu.system()))
-            .add_system_set(
-                SystemSet::on_update(GameState::Menu).with_system(click_play_button.system()),
-            );
+            .add_system_set(SystemSet::on_enter(GameState::Menu).with_system(setup_menu))
+            .add_system_set(SystemSet::on_update(GameState::Menu).with_system(click_play_button));
     }
 }
 
@@ -31,6 +29,7 @@ impl FromWorld for ButtonMaterials {
     }
 }
 
+#[derive(Component)]
 struct PlayButton;
 
 fn setup_menu(

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::render::pipeline::{
-    BlendFactor, BlendOperation, BlendState, ColorTargetState, ColorWrite, PipelineDescriptor,
-    RenderPipeline,
+    BlendComponent, BlendFactor, BlendOperation, BlendState, ColorTargetState, ColorWrite,
+    PipelineDescriptor, RenderPipeline,
 };
 use bevy::render::render_graph::{base, AssetRenderResourcesNode, RenderGraph};
 use bevy::render::texture::TextureFormat;
@@ -35,16 +35,18 @@ pub(super) fn spawn_scope(
     let pipeline = pipelines.add(PipelineDescriptor {
         color_target_states: vec![ColorTargetState {
             format: TextureFormat::default(),
-            color_blend: BlendState {
-                src_factor: BlendFactor::SrcAlpha,
-                dst_factor: BlendFactor::OneMinusSrcAlpha,
-                operation: BlendOperation::Add,
-            },
-            alpha_blend: BlendState {
-                src_factor: BlendFactor::One,
-                dst_factor: BlendFactor::One,
-                operation: BlendOperation::Min,
-            },
+            blend: Some(BlendState {
+                alpha: BlendComponent {
+                    src_factor: BlendFactor::One,
+                    dst_factor: BlendFactor::One,
+                    operation: BlendOperation::Min,
+                },
+                color: BlendComponent {
+                    src_factor: BlendFactor::SrcAlpha,
+                    dst_factor: BlendFactor::OneMinusSrcAlpha,
+                    operation: BlendOperation::Add,
+                },
+            }),
             write_mask: ColorWrite::ALL,
         }],
         // Reuse the regular sprite pipeline, shaders, etc
