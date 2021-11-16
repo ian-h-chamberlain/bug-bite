@@ -27,7 +27,9 @@ struct MainCamera;
 struct ScopeMask;
 struct Crosshair;
 
-fn spawn_camera(mut commands: Commands) {
+fn spawn_camera(mut commands: Commands, mut clear_color: ResMut<ClearColor>) {
+    clear_color.0 = Color::WHITE;
+
     commands
         .spawn_bundle(OrthographicCameraBundle::new_2d())
         .insert(MainCamera);

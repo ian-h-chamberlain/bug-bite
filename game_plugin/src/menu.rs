@@ -37,7 +37,10 @@ fn setup_menu(
     mut commands: Commands,
     font_assets: Res<FontAssets>,
     button_materials: Res<ButtonMaterials>,
+    mut clear_color: ResMut<ClearColor>,
 ) {
+    *clear_color = ClearColor::default();
+
     commands.spawn_bundle(UiCameraBundle::default());
     commands
         .spawn_bundle(ButtonBundle {

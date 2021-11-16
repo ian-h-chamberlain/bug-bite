@@ -7,7 +7,6 @@
         // this config bypasses waiting for debugger attachment, increasing speed
         {
             "name": "Quick Launch",
-            "type": "node-terminal",
             "request": "launch",
             "command": "cargo run --features dev",
         },
@@ -37,7 +36,12 @@
                 "env": {
                     "LD_LIBRARY_PATH": "${env:LD_LIBRARY_PATH}:${workspaceFolder}/target/debug:${env:HOME}/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib:${env:HOME}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib"
                 }
-            }
+            },
+            "osx": {
+                "env": {
+                    "LD_LIBRARY_PATH": "${env:LD_LIBRARY_PATH}:${workspaceFolder}/target/debug:${env:HOME}/.rustup/toolchains/stable-x86_64-apple-darwin/lib:${env:HOME}/.rustup/toolchains/stable-x86_64-apple-darwin/lib"
+                }
+            },
         },
         {
             "type": "lldb",

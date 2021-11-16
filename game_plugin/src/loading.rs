@@ -38,4 +38,7 @@ pub struct AudioAssets {
 pub struct TextureAssets {
     #[asset(path = "textures/crosshair.png")]
     pub crosshair: Handle<Texture>,
+
+    #[asset(path = "textures/stickman.png")]
+    pub stickman: Handle<Texture>,
 }

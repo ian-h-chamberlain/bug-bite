@@ -73,7 +73,7 @@ pub(super) fn spawn_scope(
             material: materials.add(ColorMaterial::color(Color::BLACK)),
             sprite: Sprite::new(screen_size),
             mesh: meshes.add(shape::Quad::new(screen_size).into()),
-            transform: Transform::from_xyz(0.0, 0.0, 1.0),
+            transform: Transform::from_xyz(0.0, 0.0, 199.0),
             ..Default::default()
         })
         .insert(ScopeMask);
@@ -91,7 +91,7 @@ pub(super) fn spawn_scope(
                 ..Default::default()
             }]),
             transform: Transform {
-                translation: Vec3::new(0.0, 0.0, 5.0),
+                translation: Vec3::new(0.0, 0.0, 200.0),
                 scale: Vec3::splat(0.15),
                 ..Default::default()
             },
